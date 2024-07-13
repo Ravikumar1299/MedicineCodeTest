@@ -10,11 +10,13 @@ import androidx.activity.viewModels
 import androidx.compose.material3.Scaffold
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ravikumarcodetest.screens.DetailsScreen
 import com.example.ravikumarcodetest.screens.HomeScreen
 import com.example.ravikumarcodetest.screens.LoginScreen
@@ -48,10 +50,17 @@ fun BasicsApp(medicineViewModel: MedicineViewModel) {
         content = {
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") {
-                    LoginScreen(navController)
+                    LoginScreen{
+                        navController.navigate("home/${it}")
+                    }
                 }
-                composable("home") {
-                    HomeScreen(navController,medicineViewModel)
+                composable("home/{username}",
+                    arguments = listOf(navArgument("username")
+                {
+                    type = NavType.StringType
+                })) {
+                 var username =   it.arguments!!.getString("username")
+                    HomeScreen(navController,medicineViewModel,username)
                 }
                 composable("details") {
                     DetailsScreen(it.arguments?.getParcelable<AssociatedDrugPar>("selectedMedication"))
